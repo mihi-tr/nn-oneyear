@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Netneutrality - shifting issues</title>
+<style>
+
+body {
+  font-family: open sans, helvetica, sans;
+  }
+
+#graph { 
+  float: left;
+  }
+
+#control {
+  float: left;
+  }
+
+svg > g.data {
+  opacity: 0.2;
+  }
+
+svg > g.data:hover , svg> g.selected {
+  opacity: 0.7;
+  }
+
+svg > g > line {
+  stroke: #000;
+  }
+
+g.axis > g.tick > line {
+  stroke: #000;
+  stroke-width: 1;
+  }
+g.axis > path {
+  opacity: 0;
+  }
+
+ul#control {
+  list-style: none;
+  width: 350px;
+  }
+
+ul#control > li {
+  display: inline-block;
+  width: 100px;
+  padding: 2px;
+  border-radius: 2px;
+  background: #CCCCFF;
+  margin: 2px;
+  margin-bottom: 10px;
+  text-align: center;
+  float: left;
+  }
+
+ul#control > li.selected {
+  background: #9999FF;
+  }
+</style>
+</head>
+<body>
+<div id="graph">
+</div>
+<ul id="control">
+</ul>
+<script src="vendor/js/d3.v3.min.js"></script>
+<script src="vendor/js/underscore-min.js"></script>
+<script>
+var width=800;
+var height=600;
+var max_r=50;
+var min_r=5;
+var distance=max_r*2;
+
+svg=d3.select('#graph')
+  .append('svg')
+  .attr('width',width)
+  .attr('height',height);
+
+d3.csv('ccodes.csv',function(ccodes) {
+
+ccodes=_.reduce(ccodes, function(x,y) { x[y.Code]=y.Country; return x},{})
+
+d3.csv('all.csv',function(d) {
+
+  t=_.map(d,function(x) { return parseInt(x.total)});
+  
+  var rscale=d3.scale.sqrt()
+    .domain([_.min(t),_.max(t)])
+    .range([min_r,max_r]);
+  
+  var yscale=d3.scale.linear()
+    .domain([0,100])
+    .range([distance/2,height-(distance/2)]);
+
+  var axis=d3.svg.axis().scale(yscale)
+    .orient('left');
+
+  data=_.filter(_.reduce(d,function(x,y) { if (x[y.CC]) {
+    x[y.CC].push(y);
+    }
+    else {
+      x[y.CC]=[y];
+      }
+    return x;
+    },{}),function(x) { return x.length==2 })
+
+  var sel= function(d) {
+    if
+    (d3.select('#'+d).attr('class')=="selected") {
+      d3.select('#'+d).attr('class','');
+      d3.select('#data-'+d).attr('class','data');
+      }
+    else {
+      d3.select('#'+d).attr('class','selected');
+      d3.select('#data-'+d).attr('class','data selected');
+      }
+    };
+
+  svg.selectAll('g')
+    .data(data)
+    .enter()
+    .append('g')
+    .attr('id',function(d) { return "data-"+d[0].CC })
+    .attr('class','data')
+    .on('click',function(d) {sel(d[0].CC)});
+  
+  svg.append('g')
+    .attr('class','axis')
+    .attr('transform','translate(30,0)')
+    .call(axis);
+ 
+  svg.append('line')
+    .attr('x1',distance)
+    .attr('x2',distance)
+    .attr('y1',height-30)
+    .attr('y2',height-36)
+    .attr('stroke','#000')
+    
+  svg.append('text')
+    .text('2012')
+    .attr('x',distance)
+    .attr('y',height-10)
+    .attr('text-anchor','middle');
+  
+  svg.append('line')
+    .attr('x1',width-distance)
+    .attr('x2',width-distance)
+    .attr('y1',height-30)
+    .attr('y2',height-36)
+    .attr('stroke','#000')
+    
+  svg.append('text')
+    .text('2013')
+    .attr('x',width-distance)
+    .attr('y',height-10)
+    .attr('text-anchor','middle');
+
+  svg.selectAll('g.data')
+    .append('circle')
+    .attr('r',function(d) { return rscale(d[0].total);})
+    .attr('cx',distance)
+    .attr('cy',function(d) { return yscale(d[0].percent);})
+    .append('title')
+    .text(function(d) { return ccodes[d[0].CC] + ": "+ d[0].percent+"% shaped"});
+
+
+  svg.selectAll('g.data')
+    .append('circle')
+    .attr('r',function(d) { return rscale(d[1].total);})
+    .attr('cx',width-distance)
+    .attr('cy',function(d) { return yscale(d[1].percent);})
+    .append('title')
+    .text(function(d) { return ccodes[d[0].CC] + ": " +d[1].percent+"% shaped"});
+
+  svg.selectAll('g.data')
+    .append('line')
+    .attr('x1',distance)
+    .attr('x2',width-distance)
+    .attr('y1',function(d) {return yscale(d[0].percent);})
+    .attr('y2',function(d) {return yscale(d[1].percent);})
+    .style('stroke-width',function(d) 
+      {return (rscale(_.min([d[0].total,d[1].total]))) }) ;
+  
+  cc=_.filter(_.uniq(_.map(data,function(x) { return x[0].CC})),
+    function(x) { return ccodes[x]!=undefined});
+  console.log(cc);
+
+  var control=d3.select("#control");
+
+  control.selectAll("li")
+    .data(cc)
+    .enter()
+    .append("li")
+    .text(function(d) { return ccodes[d]})
+    .attr('id',function(d) { return (d)})
+    .on('click',function(d) { sel(d)
+    })
+  
+  }) })
+
+</script>
+</body>
+</html>
