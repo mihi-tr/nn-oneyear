@@ -12,9 +12,12 @@ body {
   float: left;
   }
 
+svg.togglevis > g.data {
+  visibility: hidden;
+}
+
 svg > g.data {
   opacity: 0.2;
-  visibility: hidden;
 }
 
 svg > g.data > circle {
@@ -24,6 +27,16 @@ svg > g.data > circle {
 svg > g.data:hover,
 svg> g.selected {
   opacity: 0.7;
+  z-Index: 999;
+}
+
+svg > g.selected > circle,
+svg > g.selected > line {
+  stroke: #1FFF00;
+  fill: #1FFF00;
+  }
+
+svg.togglevis > g.data.selected {
   visibility: visible;
 }
 
@@ -69,6 +82,7 @@ div#gd {
 </head>
 <body>
 <h1>How did shaping of ISPs change last year?</h1>
+<button id='toggleall'>show none</button>
 <div id="gd">
   <div id="graph">
   </div>
@@ -237,7 +251,20 @@ d3.csv('all.csv',function(d) {
     .attr('id',function(d) { return (d)})
     .on('click', selCountry )
     })
+
+  var ta = d3.select('#toggleall')
+    .on('click', function () {
+      if (svg.attr('class') === 'togglevis') {
+        svg.attr('class', '');
+        ta.text('show all');
+      } else {
+        svg.attr('class', 'togglevis');  
+        ta.text('show none');
+      }
+    });
   })
+
+  
 
 </script>
 </body>
