@@ -15,8 +15,9 @@ a {
 }
 
 h1 {
-	color: rgb(172, 246, 78);
+	color: rgb(255, 245, 0);
 	margin: 20px 14px;
+	font-weight: normal;
 }
 
 #control {
@@ -29,6 +30,7 @@ svg.togglevis > g.data {
 
 svg > g.data {
   opacity: 0.2;
+  transition:opacity .3s;
 }
 
 svg > g.data > text {
@@ -41,9 +43,16 @@ svg > g.data > circle {
   fill: #0099FF;
 }
 
+svg > g.data:hover > circle,
+svg > g.data:hover > line {
+  fill: #FF0;
+  stroke: #FF0;
+}
+
+
 svg > g.data:hover,
 svg> g.selected {
-  opacity: 0.7;
+  opacity: .7;
   z-Index: 999;
 }
 
@@ -83,11 +92,13 @@ g.axis > g.tick > text, svg > text {
   
 .data > text {
 	fill:yellow;
+	text-shadow: #000 0px 0px 4px, #000 0px 0px 4px, #000 0px 0px 4px;
 }
 
 ul#control {
 	list-style: none;
 	padding: 0 0 0 1005px;
+	margin: -20px 0 0;
   }
 
 ul#control > li {
@@ -132,7 +143,7 @@ div#gd {
 	font-size: .9em;
 	color: #ccc;
 	margin: 10px 39px;
-	line-height: 1.5em;
+	line-height: 1.4em;
 }
   
   </style>
