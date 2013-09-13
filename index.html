@@ -20,6 +20,12 @@ svg > g.data {
   opacity: 0.2;
 }
 
+svg > g.data > text {
+  visibility: hidden;
+  font-family: open sans, helvetica, sans;
+  font-size: 0.7em;
+}
+
 svg > g.data > circle {
   fill: #0000FF;
 }
@@ -30,11 +36,17 @@ svg> g.selected {
   z-Index: 999;
 }
 
-svg > g.selected > circle,
 svg > g.selected > line {
   stroke: #1FFF00;
+}
+
+svg > g.selected > circle {
   fill: #1FFF00;
-  }
+}
+
+svg > g.selected > text {
+  visibility: visible;
+}
 
 svg.togglevis > g.data.selected {
   visibility: visible;
@@ -75,7 +87,7 @@ ul#control > li.selected {
   
 
 div#gd {
-  width: 800px;
+  width: 870px;
   float: left;
   }
   </style>
@@ -119,7 +131,7 @@ var distance=max_r*2.5;
 
 svg=d3.select('#graph')
   .append('svg')
-  .attr('width',width)
+  .attr('width',width+250)
   .attr('height',height);
 
 d3.csv('ccodes.csv',function(ccodes) {
@@ -226,6 +238,12 @@ d3.csv('all.csv',function(d) {
     .attr('cx',width-distance)
     .attr('cy',function(d) { return yscale(d[1].percent);})
     .append('title')
+    .text(function(d) { return ccodes[d[0].CC] + ": " +d[1].percent+"% shaped"});
+
+  svg.selectAll('g.data')
+    .append('text')
+    .attr('x',width-distance + 20)
+    .attr('y',function(d) { return yscale(d[1].percent);})
     .text(function(d) { return ccodes[d[0].CC] + ": " +d[1].percent+"% shaped"});
 
   svg.selectAll('g.data')
