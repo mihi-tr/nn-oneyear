@@ -5,8 +5,20 @@
 <style>
 
 body {
-  font-family: open sans, helvetica, sans;
-  }
+	font-family: open sans, helvetica, Arial, sans-serif;
+	color:#fff;
+	background-color: #0A0E11;
+}
+
+a {
+	color:#fe0;
+}
+
+h1 {
+	color: rgb(255, 245, 0);
+	margin: 20px 14px;
+	font-weight: normal;
+}
 
 #control {
   float: left;
@@ -18,6 +30,7 @@ svg.togglevis > g.data {
 
 svg > g.data {
   opacity: 0.2;
+  transition:opacity .3s;
 }
 
 svg > g.data > text {
@@ -27,12 +40,19 @@ svg > g.data > text {
 }
 
 svg > g.data > circle {
-  fill: #0000FF;
+  fill: #0099FF;
 }
+
+svg > g.data:hover > circle,
+svg > g.data:hover > line {
+  fill: #FF0;
+  stroke: #FF0;
+}
+
 
 svg > g.data:hover,
 svg> g.selected {
-  opacity: 0.7;
+  opacity: .7;
   z-Index: 999;
 }
 
@@ -54,43 +74,78 @@ svg.togglevis > g.data.selected {
 }
 
 svg > g > line {
-  stroke: #0000FF;
+  stroke: #0099FF;
   }
 
 g.axis > g.tick > line {
-  stroke: #000;
+  stroke: #999;
   stroke-width: 1;
   }
 g.axis > path {
   opacity: 0;
   }
+  
+g.axis > g.tick > text, svg > text {
+	fill: #999;
+	font-size:12px;
+}
+  
+.data > text {
+	fill:yellow;
+	text-shadow: #000 0px 0px 4px, #000 0px 0px 4px, #000 0px 0px 4px;
+}
 
 ul#control {
-  list-style: none;
-  width: 350px;
+	list-style: none;
+	padding: 0 0 0 1005px;
+	margin: -20px 0 0;
   }
 
 ul#control > li {
-  display: inline-block;
-  width: 100px;
-  padding: 2px;
-  border-radius: 2px;
-  background: rgba(0,0,255,0.2);
-  margin: 2px;
-  margin-bottom: 10px;
-  text-align: center;
-  float: left;
-  }
+	display: inline-block;
+	vertical-align: top;
+	width: 200px;
+	padding: 3px 5px 3px 6px;
+	border-left: #00579C 6px solid;
+	background: rgba(84, 129, 170, .2);
+	margin: 0 12px 2px 0;
+	cursor: pointer;
+	color: #CFCFCF;
+	border-radius: 2px;
+	font-size:.85em;
+}
 
 ul#control > li.selected {
-  background: rgba(0,0,255,0.7);
+	background: rgba(36, 107, 197, 0.7);
+	border-left: #29CE00 6px solid;
+	box-shadow: rgba(0, 224, 255, 0.2) 0 0 11px;
 }
-  
+
+#toggleall {
+	border: 1px solid #61B3FF;
+	color: #ccc;
+	background-color: #000;
+	text-transform: uppercase;
+	border-radius: 4px;
+	padding: 4px 10px;
+	margin: 0 0 0 14px;
+	cursor:pointer;
+	font-size:.6em;
+}
 
 div#gd {
-  width: 870px;
-  float: left;
-  }
+	width: 870px;
+	z-index: 9;
+	position: absolute;
+}
+
+#description {
+	font-size: .9em;
+	color: #ccc;
+	margin: 10px 39px;
+	line-height: 1.4em;
+}
+  
   </style>
 </head>
 <body>
@@ -132,7 +187,7 @@ var distance=max_r*2.5;
 
 svg=d3.select('#graph')
   .append('svg')
-  .attr('width',width+250)
+  .attr('width',width+210)
   .attr('height',height);
 
 d3.csv('ccodes.csv',function(ccodes) {
@@ -197,7 +252,7 @@ d3.csv('all.csv',function(d) {
     .attr('x2',distance)
     .attr('y1',height-30)
     .attr('y2',height-36)
-    .attr('stroke','#000')
+    .attr('stroke','#999')
     
   svg.append('text')
     .text('2011-2012')
@@ -210,7 +265,7 @@ d3.csv('all.csv',function(d) {
     .attr('x2',width-distance)
     .attr('y1',height-30)
     .attr('y2',height-36)
-    .attr('stroke','#000')
+    .attr('stroke','#999')
     
   svg.append('text')
     .text('2012-2013')
