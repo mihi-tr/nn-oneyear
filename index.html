@@ -14,16 +14,18 @@ body {
 
 svg > g.data {
   opacity: 0.2;
-  }
+  visibility: hidden;
+}
 
 svg > g.data > circle {
   fill: #0000FF;
-  }
+}
 
-svg > g.data:hover , svg> g.selected {
+svg > g.data:hover,
+svg> g.selected {
   opacity: 0.7;
-  }
-
+  visibility: visible;
+}
 
 svg > g > line {
   stroke: #0000FF;
@@ -57,41 +59,43 @@ ul#control > li {
 ul#control > li.selected {
   background: rgba(0,0,255,0.7);
   }
+  
 
 div#gd {
   width: 800px;
   float: left;
   }
-</style>
+  </style>
 </head>
 <body>
 <h1>How did shaping of ISPs change last year?</h1>
 <div id="gd">
-<div id="graph">
-</div>
-<div id="description">
-<p>
-One year ago we started the <a
-href="http://netneutralitymap.org">NetNeutrality Map</a> - a map displaying the status
-of netneutrality in the world. It always displays data one year back - so
-right now we have two years worth of data and we can ask ourselves: do ISPs
-worldwide shape more or less?</p>
-<p>The visualization above, shows the percentage of shaped tests for the
-period 2011-09-01 to 2012-09-01, the one on the right for 2012-09-01 to
-2013-09-01. The bigger a circle, the more tests were made in this
-country. You can select countries by clicking on them on the left.
-</p>
-<p>
-Interestingly, providers seemed to shape less last year, than the year
-before - only in Korea, there seems to be more shaping this year than last
-year.
-</p>
-</div>
+  <div id="graph">
+  </div>
+  <div id="description">
+    <p>
+    One year ago we started the <a
+    href="http://netneutralitymap.org">NetNeutrality Map</a> - a map displaying the status
+    of netneutrality in the world. It always displays data one year back - so
+    right now we have two years worth of data and we can ask ourselves: do ISPs
+    worldwide shape more or less?</p>
+    <p>The visualization above, shows the percentage of shaped tests for the
+    period 2011-09-01 to 2012-09-01, the one on the right for 2012-09-01 to
+    2013-09-01. The bigger a circle, the more tests were made in this
+    country. You can select countries by clicking on them on the left.
+    </p>
+    <p>
+    Interestingly, providers seemed to shape less last year, than the year
+    before - only in Korea, there seems to be more shaping this year than last
+    year.
+    </p>
+  </div>
 </div>
 <ul id="control">
 </ul>
 <script src="vendor/js/d3.v3.min.js"></script>
 <script src="vendor/js/underscore-min.js"></script>
+<script src="vendor/js/jquery-1.10.2.min.js"></script>
 <script>
 var width=800;
 var height=600;
@@ -132,17 +136,21 @@ d3.csv('all.csv',function(d) {
     return x;
     },{}),function(x) { return x.length==2 })
 
-  var sel= function(d) {
-    if
-    (d3.select('#'+d).attr('class')=="selected") {
+
+  /**
+   * select a node 
+   * @param d string id
+  **/
+  function selCountry (d) {
+    if (d3.select('#'+d).attr('class')=="selected") {
       d3.select('#'+d).attr('class','');
       d3.select('#data-'+d).attr('class','data');
-      }
+    }
     else {
       d3.select('#'+d).attr('class','selected');
       d3.select('#data-'+d).attr('class','data selected');
-      }
-    };
+    }
+  }
 
   svg.selectAll('g')
     .data(data)
@@ -227,10 +235,9 @@ d3.csv('all.csv',function(d) {
     .append("li")
     .text(function(d) { return ccodes[d]})
     .attr('id',function(d) { return (d)})
-    .on('click',function(d) { sel(d)
+    .on('click', selCountry )
     })
-  
-  }) })
+  })
 
 </script>
 </body>
